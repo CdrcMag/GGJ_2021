@@ -25,6 +25,7 @@ public class Door : MonoBehaviour
     {
         if (Inventory.Instance.GetMatchingKey(key) && key != null)
         {
+            StartCoroutine(IMoveDoor());
             print("Door opens");
         }
         else
@@ -48,6 +49,15 @@ public class Door : MonoBehaviour
         if (other.tag == "Player")
         {
             playerInside = false;
+        }
+    }
+
+    IEnumerator IMoveDoor()
+    {
+        while(transform.position.y > -3)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y-0.001f, transform.position.z);
+            yield return null;
         }
     }
 
