@@ -5,39 +5,65 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class Player_Movement : MonoBehaviour
 {
+    //Movement speed
     public float speed;
 
+    //Mouse speed
+    public float lookSpeed = 3;
+
+    //Rotation X max of camera
+    public float maxXRotation;
+
+    private Vector2 rotation = Vector2.zero;
     private CharacterController controller;
-
-    private Vector3 dir;
-
+    
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
     }
 
-    private void Update()
+    private void Start()
     {
-        Look();
-
-
-       if (Input.GetAxisRaw("Vertical") > 0.1f)
-       {
-            controller.Move(transform.forward * speed);
-       }
-        if (Input.GetAxisRaw("Vertical") < -0.1f)
-        {
-            controller.Move(-transform.forward * speed);
-        }
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    public float lookSpeed = 3;
-    private Vector2 rotation = Vector2.zero;
+    private void Update()
+    {
+        //Look around you
+        Look();
+
+        Vector3 dir = Vector3.zero;
+
+        if (Input.GetAxisRaw("Vertical") > 0.1f)
+            dir = dir + transform.forward;
+        
+        if (Input.GetAxisRaw("Vertical") < -0.1f)
+            dir = dir + -transform.forward;
+        
+        if (Input.GetAxisRaw("Horizontal") > 0.1f)
+            dir = dir + transform.right;
+        
+        if (Input.GetAxisRaw("Horizontal") < -0.1f)
+            dir = dir + -transform.right;
+
+        dir.y = -9.81f;
+
+        dir.Normalize();
+
+        controller.Move(dir * speed);
+
+
+    }
+
+   
+
+
     public void Look()
     {
         rotation.y += Input.GetAxis("Mouse X");
         rotation.x += -Input.GetAxis("Mouse Y");
-        rotation.x = Mathf.Clamp(rotation.x, -15f, 15f);
+
+        rotation.x = Mathf.Clamp(rotation.x, -maxXRotation, maxXRotation);
         transform.eulerAngles = new Vector2(0, rotation.y) * lookSpeed;
         Camera.main.transform.localRotation = Quaternion.Euler(rotation.x * lookSpeed, 0, 0);
     }
