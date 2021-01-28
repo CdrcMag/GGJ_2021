@@ -24,13 +24,7 @@ public class Inventory : MonoBehaviour
 
     public Pickable[] currentInventory = new Pickable[5];
 
-    public int c_A, c_B;
-
-    [ContextMenu("Combine")]
-    public void Combine()
-    {
-
-    }
+  
     
 
 
